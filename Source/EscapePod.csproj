@@ -41,5 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Parts.cs" />
+    <Compile Include="Module.cs" />
+    <Compile Include="Ring.cs" />
+    <Compile Include="ZPart.cs" />
   </ItemGroup>
 </Project>

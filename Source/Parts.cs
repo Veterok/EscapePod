@@ -6,9 +6,6 @@
    This code is free to use and modify as long as the original authors are credited.
 
 Change Log
-1.2:
-*fixed* command pod decouple
-
 1.1: 
 Stopped deleting decoupler
 Copy Staging right before decoupling instead of just on part start.
@@ -40,7 +37,7 @@ namespace Zoolotac
 		}
 
 	}
-	class EscapePod : Part
+	class EscapePod : ZoolotacPart 
 	{
 		VInfoBox thisIndicator;
 		public int rotPower = 1;
@@ -78,47 +75,47 @@ namespace Zoolotac
 //			}
 //
 //		}
-		private void rebuildTree (Part Root)
-		{
-			//vesselTransform(Root);
-			print ("*Tree Rebuid*");
-			if (Root.parent != null) {
-				Root.addChild (Root.parent);
-				rebuildTreeRecursive(Root.parent,Root);
-					//Root.parent = null;
-			}
-			print ("*Tree Rebuilt*");
-
-		}
-
-		private void rebuildTreeRecursive (Part ThisPart, Part PrevPart)
-		{
-			if (ThisPart == this.vessel.rootPart) {
-				PrevPart.removeChild (ThisPart);
-				foreach (Part child in ThisPart.children) {
-					ThisPart.removeChild (child);
-				}
-				ThisPart.addChild (this);
-			} else {
-
-				//print ("thispart : "+ ThisPart.name);
-				if (ThisPart.potentialParent != null)
-					print ("potential parent : " + ThisPart.potentialParent.name);
-
-				ThisPart.children.Remove (PrevPart);
-				if (ThisPart.parent != null) {
-					//print ("parent : "+ThisPart.parent.name);
-					ThisPart.addChild (ThisPart.parent);
-					rebuildTreeRecursive (ThisPart.parent, ThisPart);
-				}
-				ThisPart.parent = PrevPart;
-				if (ThisPart.parent == null) {
-					//print (ThisPart.name + " parent should =  " + PrevPart);
-					//print (ThisPart.name + " parent = " + ThisPart.parent);
-				}
-			}
-
-		}
+//		private void rebuildTree (Part Root)
+//		{
+//			//vesselTransform(Root);
+//			print ("*Tree Rebuid*");
+//			if (Root.parent != null) {
+//				Root.addChild (Root.parent);
+//				rebuildTreeRecursive(Root.parent,Root);
+//					//Root.parent = null;
+//			}
+//			print ("*Tree Rebuilt*");
+//
+//		}
+//
+//		private void rebuildTreeRecursive (Part ThisPart, Part PrevPart)
+//		{
+//			if (ThisPart == this.vessel.rootPart) {
+//				PrevPart.removeChild (ThisPart);
+//				foreach (Part child in ThisPart.children) {
+//					ThisPart.removeChild (child);
+//				}
+//				ThisPart.addChild (this);
+//			} else {
+//
+//				//print ("thispart : "+ ThisPart.name);
+//				if (ThisPart.potentialParent != null)
+//					print ("potential parent : " + ThisPart.potentialParent.name);
+//
+//				ThisPart.children.Remove (PrevPart);
+//				if (ThisPart.parent != null) {
+//					//print ("parent : "+ThisPart.parent.name);
+//					ThisPart.addChild (ThisPart.parent);
+//					rebuildTreeRecursive (ThisPart.parent, ThisPart);
+//				}
+//				ThisPart.parent = PrevPart;
+//				if (ThisPart.parent == null) {
+//					//print (ThisPart.name + " parent should =  " + PrevPart);
+//					//print (ThisPart.name + " parent = " + ThisPart.parent);
+//				}
+//			}
+//
+//		}
 
 
 		private int fhighestStage ()
@@ -176,7 +173,6 @@ namespace Zoolotac
 					Vector3 vel = -this.vessel.angularVelocity;
 					torque = new Vector3 (Mathf.Clamp (vel.x, -this.maxTorque, this.maxTorque), Mathf.Clamp (vel.y, -this.maxTorque, this.maxTorque), Mathf.Clamp (vel.z, -this.maxTorque, this.maxTorque));
 					base.Rigidbody.AddRelativeTorque (torque, ForceMode.Force);
-
 					if (thisIndicator == null)
 						ShowIndicator ();
 					thisIndicator.SetValue (Mathf.Max (Mathf.Abs (torque.x), Mathf.Abs (torque.y), Mathf.Abs (torque.z)) / maxTorque);
@@ -196,7 +192,6 @@ namespace Zoolotac
 		 protected override void onPartFixedUpdate ()
 		{
 			base.onPartFixedUpdate ();
-
 			if (this.isConnected) {
 				if (this.vessel.rootPart is Decoupler || this.vessel.rootPart is RadialDecoupler || this.vessel.rootPart is DecouplerGUI) {
 					//this.vessel.rootPart.force_activate();
@@ -226,6 +221,10 @@ namespace Zoolotac
 				}
 				else{
 					if (applyDecpoupleForce){
+//						FlightGlobals.Vessels.Remove(vessel);
+//						vessel.Initialize();
+//						vessel.vesselName ="renamed";
+						vesselInfo ();
 						base.rigidbody.AddForce(vdecoupleForce, ForceMode.Force);
 						applyDecpoupleForce =false;
 					}
@@ -303,6 +302,7 @@ namespace Zoolotac
 
 		protected override void onDisconnect ()
 		{
+			//vesselInfo ();
 			MakeStageList();
 			base.onDisconnect ();
 		}
@@ -324,6 +324,7 @@ namespace Zoolotac
 		 protected override void onFlightStart ()
 		{
 			//MakeStageList ();
+
             base.onFlightStart();
 
         }
