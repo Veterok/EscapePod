@@ -6,6 +6,9 @@
    This code is free to use and modify as long as the original authors are credited.
 
 Change Log
+1.2:
+*fixed* command pod decouple
+
 1.1: 
 Stopped deleting decoupler
 Copy Staging right before decoupling instead of just on part start.
@@ -209,7 +212,7 @@ namespace Zoolotac
 					//float decoupleForce = 1f;
 					this.vessel.orbit.objectType = Orbit.ObjectType.SPACE_DEBRIS;
 					this.vessel.vesselName = this.vessel.vesselName.Substring(0,vessel.vesselName.Length - namesuffix.Length ) + " Debris";
-					this.decouple(0f);
+					this.vessel.rootPart.children[0].decouple(0f);
 					applyDecpoupleForce =true;
 					vdecoupleForce = new Vector3(0,0,0);
 					vdecoupleForce = (base.transform.up * -decoupleForce);
