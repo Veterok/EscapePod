@@ -17,6 +17,7 @@ Copy Staging right before decoupling instead of just on part start.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 using UnityEngine;
 
 namespace Zoolotac
@@ -212,7 +213,12 @@ namespace Zoolotac
 					//float decoupleForce = 1f;
 					this.vessel.orbit.objectType = Orbit.ObjectType.SPACE_DEBRIS;
 					this.vessel.vesselName = this.vessel.vesselName.Substring(0,vessel.vesselName.Length - namesuffix.Length ) + " Debris";
+
+					if(this.vessel.rootPart.GetType().ToString() == "ErkleWarpClamp")
+					print ("TYPE: "+this.vessel.rootPart.GetType().ToString());
+					else
 					this.vessel.rootPart.children[0].decouple(0f);
+
 					applyDecpoupleForce =true;
 					vdecoupleForce = new Vector3(0,0,0);
 					vdecoupleForce = (base.transform.up * -decoupleForce);
